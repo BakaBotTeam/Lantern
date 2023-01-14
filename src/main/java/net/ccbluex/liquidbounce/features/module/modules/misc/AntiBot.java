@@ -117,7 +117,7 @@ public class AntiBot extends Module {
                 if (data.getProfile() != null && data.getProfile().getName() != null) {
                     if (!wasAdded) 
                         wasAdded = data.getProfile().getName().equals(mc.thePlayer.getName());
-                    else if (czechHekValue.get() || !mc.thePlayer.isSpectator() && !mc.thePlayer.capabilities.allowFlying && (!czechHekPingCheckValue.get() || data.getPing() != 0) && (!czechHekGMCheckValue.get() || data.getGameMode() != WorldSettings.GameType.NOT_SET)) {
+                    else if (czechHekValue.get() && !mc.thePlayer.isSpectator() && !mc.thePlayer.capabilities.allowFlying && (!czechHekPingCheckValue.get() || data.getPing() != 0) && (!czechHekGMCheckValue.get() || data.getGameMode() != WorldSettings.GameType.NOT_SET)) {
                         event.cancelEvent();
                         if (debugValue.get()) ClientUtils.displayChatMessage("§7[§a§lAnti Bot/§6Matrix§7] §fPrevented §r"+data.getProfile().getName()+" §ffrom spawning.");
                     } else if (packetDuplicateNameValue.get() || packetDuplicatePlayerUUIDValue.get()) {
