@@ -124,7 +124,7 @@ public class AntiBot extends Module {
                         AtomicBoolean detected = new AtomicBoolean(false);
                         mc.theWorld.loadedEntityList.stream().filter((it) -> it instanceof EntityPlayer)
                                 .forEach((it) -> {
-                                    if (packetDuplicateNameValue.get() && it.getName().equals(data.getProfile().getName())) {
+                                    if (packetDuplicateNameValue.get() && (it.getName().equals(data.getProfile().getName()) || it.getDisplayName().equals(data.getDisplayName()))) {
                                         detected.set(true);
                                     }
 
