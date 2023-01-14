@@ -30,7 +30,7 @@ import kotlin.concurrent.schedule
 @ModuleInfo(name = "AutoPlay", spacedName = "Auto Play", description = "Automatically move you to another game after finishing it.", category = ModuleCategory.MISC)
 class AutoPlay : Module() {
     private var clickState = 0
-    private val modeValue = ListValue("Server", arrayOf("RedeSky", "BlocksMC", "Minemora", "Hypixel", "Jartex", "MineFC/HeroMC_Bedwars"), "RedeSky")
+    private val modeValue = ListValue("Server", arrayOf("RedeSky", "BlocksMC", "Minemora", "Hypixel", "Jartex", "MineFC/HeroMC_Bedwars", "Mineland_Bedwars"), "RedeSky")
     private val bwModeValue = ListValue("Mode", arrayOf("SOLO", "4v4v4v4"), "4v4v4v4", { modeValue.get().equals("minefc/heromc_bedwars", true) })
     private val autoStartValue = BoolValue("AutoStartAtLobby", true, { modeValue.get().equals("minefc/heromc_bedwars", true) })
     private val replayWhenKickedValue = BoolValue("ReplayWhenKicked", true, { modeValue.get().equals("minefc/heromc_bedwars", true) })
@@ -108,6 +108,16 @@ class AutoPlay : Module() {
                     if (modeValue.equals("hypixel") && clickState == 1 && windowId != 0 && itemName.equals("item.fireworks", ignoreCase = true)) {
                         mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
                         mc.netHandler.addToSendQueue(C0DPacketCloseWindow(windowId))
+                    }
+                }
+                "mineland_bedwars" -> {
+                    if (windowId == 0 && slot == 38 && itemName.contains("paper", ignoreCase = true)) {
+                        queueAutoPlay {
+                            mc.netHandler.addToSendQueue(C09PacketHeldItemChange(1))
+                            repeat(3) {
+                                mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(item))
+                            }
+                        }
                     }
                 }
             }

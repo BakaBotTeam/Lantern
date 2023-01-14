@@ -6,21 +6,16 @@
 package net.ccbluex.liquidbounce.features.module.modules.misc;
 
 import net.ccbluex.liquidbounce.LiquidBounce;
-import net.ccbluex.liquidbounce.event.AttackEvent;
-import net.ccbluex.liquidbounce.event.EventTarget;
-import net.ccbluex.liquidbounce.event.PacketEvent;
-import net.ccbluex.liquidbounce.event.UpdateEvent;
-import net.ccbluex.liquidbounce.event.WorldEvent;
+import net.ccbluex.liquidbounce.event.*;
 import net.ccbluex.liquidbounce.features.module.Module;
 import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
-import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
 import net.ccbluex.liquidbounce.utils.ClientUtils;
 import net.ccbluex.liquidbounce.utils.EntityUtils;
 import net.ccbluex.liquidbounce.utils.render.ColorUtils;
 import net.ccbluex.liquidbounce.value.BoolValue;
-import net.ccbluex.liquidbounce.value.IntegerValue;
 import net.ccbluex.liquidbounce.value.FloatValue;
+import net.ccbluex.liquidbounce.value.IntegerValue;
 import net.ccbluex.liquidbounce.value.ListValue;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
@@ -33,11 +28,8 @@ import net.minecraft.network.play.server.S38PacketPlayerListItem;
 import net.minecraft.network.play.server.S41PacketServerDifficulty;
 import net.minecraft.world.WorldSettings;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 @ModuleInfo(name = "AntiBot", spacedName = "Anti Bot", description = "Prevents KillAura from attacking AntiCheat bots.", category = ModuleCategory.MISC)
@@ -71,6 +63,8 @@ public class AntiBot extends Module {
     private final BoolValue illegalName = new BoolValue("IllegalName", false);
     private final BoolValue removeFromWorld = new BoolValue("RemoveFromWorld", false);
     private final IntegerValue removeIntervalValue = new IntegerValue("Remove-Interval", 20, 1, 100, " tick");
+    private final BoolValue packetDuplicateNameValue = new BoolValue("PacketDuplicateName", false);
+    private final BoolValue packetDuplicatePlayerUUIDValue = new BoolValue("PacketDuplicatePlayerUUID", false);
     private final BoolValue debugValue = new BoolValue("Debug", false);
 
     private final List<Integer> ground = new ArrayList<>();
@@ -114,7 +108,7 @@ public class AntiBot extends Module {
 
         final Packet<?> packet = event.getPacket();
 
-        if (czechHekValue.get()) {
+        if (czechHekValue.get() || (packetDuplicateNameValue.get() || packetDuplicatePlayerUUIDValue.get())) {
             if (packet instanceof S41PacketServerDifficulty) wasAdded = false;
             if (packet instanceof S38PacketPlayerListItem) {
                 final S38PacketPlayerListItem packetListItem = (S38PacketPlayerListItem) event.getPacket();
@@ -123,9 +117,26 @@ public class AntiBot extends Module {
                 if (data.getProfile() != null && data.getProfile().getName() != null) {
                     if (!wasAdded) 
                         wasAdded = data.getProfile().getName().equals(mc.thePlayer.getName());
-                    else if (!mc.thePlayer.isSpectator() && !mc.thePlayer.capabilities.allowFlying && (!czechHekPingCheckValue.get() || data.getPing() != 0) && (!czechHekGMCheckValue.get() || data.getGameMode() != WorldSettings.GameType.NOT_SET)) {
+                    else if (czechHekValue.get() || !mc.thePlayer.isSpectator() && !mc.thePlayer.capabilities.allowFlying && (!czechHekPingCheckValue.get() || data.getPing() != 0) && (!czechHekGMCheckValue.get() || data.getGameMode() != WorldSettings.GameType.NOT_SET)) {
                         event.cancelEvent();
                         if (debugValue.get()) ClientUtils.displayChatMessage("§7[§a§lAnti Bot/§6Matrix§7] §fPrevented §r"+data.getProfile().getName()+" §ffrom spawning.");
+                    } else if (packetDuplicateNameValue.get() || packetDuplicatePlayerUUIDValue.get()) {
+                        AtomicBoolean detected = new AtomicBoolean(false);
+                        mc.theWorld.loadedEntityList.stream().filter((it) -> it instanceof EntityPlayer)
+                                .forEach((it) -> {
+                                    if (packetDuplicateNameValue.get() && it.getName().equals(data.getProfile().getName())) {
+                                        detected.set(true);
+                                    }
+
+                                    if (packetDuplicatePlayerUUIDValue.get() && ((EntityPlayer) it).getGameProfile().getId() == data.getProfile().getId()) {
+                                        detected.set(true);
+                                    }
+                                });
+
+                        if (detected.get()) {
+                            event.cancelEvent();
+                            if (debugValue.get()) ClientUtils.displayChatMessage("[Anti Bot] Remove a bot.");
+                        }
                     }
                 }
             }

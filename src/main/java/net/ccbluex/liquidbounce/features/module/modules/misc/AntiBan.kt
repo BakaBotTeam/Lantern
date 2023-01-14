@@ -5,20 +5,18 @@
  */
 package net.ccbluex.liquidbounce.features.module.modules.misc
 
+//import net.minecraft.network.play.server.S02PacketChat
+
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.event.EventTarget
 import net.ccbluex.liquidbounce.event.PacketEvent
 import net.ccbluex.liquidbounce.event.WorldEvent
-import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification
 import net.ccbluex.liquidbounce.utils.misc.HttpUtils
-import net.ccbluex.liquidbounce.utils.timer.MSTimer
-//import net.minecraft.network.play.server.S02PacketChat
 import net.minecraft.network.play.server.*
-
 import kotlin.concurrent.thread
 
 @ModuleInfo(name = "AntiBan", spacedName = "Anti Ban", description = "Anti staff on BlocksMC. Automatically leaves a map if detected known staffs.", category = ModuleCategory.MISC)
@@ -27,23 +25,14 @@ class AntiBan : Module() {
     private var obStaffs = "_"
     private var detected = false
     private var totalCount = 0
-    private var finishedCheck = false
 
-    private var updater = MSTimer()
-
-    private lateinit var staff_main: String
-    private lateinit var staff_fallback: String
-
-    init {
-        staff_main = "https://add-my-brain.exit-scammed.repl.co/staff/"
-        staff_fallback = "${LiquidBounce.CLIENT_CLOUD}/staffs.txt"
-    }
+    private var staff_fallback = "${LiquidBounce.CLIENT_CLOUD}/staffs.txt"
 
     override fun onInitialize() {
         thread {
             obStaffs = HttpUtils.get(staff_fallback)
             totalCount = obStaffs.filter { it.isWhitespace() }.count()
-            println("[Staff/fallback] ${obStaffs}")
+            // println("[Staff/fallback] ${obStaffs}")
         }
     }
 
