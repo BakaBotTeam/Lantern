@@ -8,11 +8,13 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.client;
 import de.enzaxd.viaforge.ViaForge;
 import de.enzaxd.viaforge.util.AttackOrder;
 import net.ccbluex.liquidbounce.LiquidBounce;
+import net.ccbluex.liquidbounce.utils.TitleUtils;
 import net.ccbluex.liquidbounce.event.*;
 import net.ccbluex.liquidbounce.features.module.modules.combat.AutoClicker;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.AbortBreaking;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.MultiActions;
 import net.ccbluex.liquidbounce.features.module.modules.misc.Patcher;
+import net.ccbluex.liquidbounce.features.module.modules.ghost.NoClickDelay;
 import net.ccbluex.liquidbounce.features.module.modules.world.FastPlace;
 import net.ccbluex.liquidbounce.injection.forge.mixins.accessors.MinecraftForgeClientAccessor;
 import net.ccbluex.liquidbounce.ui.client.GuiMainMenu;
@@ -128,7 +130,7 @@ public abstract class MixinMinecraft {
 
     @Inject(method = "createDisplay", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/Display;setTitle(Ljava/lang/String;)V", shift = At.Shift.AFTER))
     private void createDisplay(CallbackInfo callbackInfo) {
-        Display.setTitle("Lantern client v" + LiquidBounce.CLIENT_VERSION);
+        TitleUtils.setDefaultTitle();
     }
 
     @Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At("HEAD"))
@@ -215,9 +217,9 @@ public abstract class MixinMinecraft {
     @Inject(method = "setWindowIcon", at = @At("HEAD"), cancellable = true)
     private void setWindowIcon(CallbackInfo callbackInfo) {
         if(Util.getOSType() != Util.EnumOS.OSX) {
-            final ByteBuffer[] liquidBounceFavicon = IconUtils.getFavicon();
-            if(liquidBounceFavicon != null) {
-                Display.setIcon(liquidBounceFavicon);
+            final ByteBuffer[] clientIcon = IconUtils.getFavicon();
+            if(clientIcon != null) {
+                Display.setIcon(clientIcon);
                 callbackInfo.cancel();
             }
         }
@@ -232,7 +234,7 @@ public abstract class MixinMinecraft {
     private void clickMouse(CallbackInfo callbackInfo) {
         CPSCounter.registerClick(CPSCounter.MouseButton.LEFT);
 
-        if (Patcher.noHitDelay.get() || LiquidBounce.moduleManager.getModule(AutoClicker.class).getState())
+        if (LiquidBounce.moduleManager.getModule(AutoClicker.class).getState() || LiquidBounce.moduleManager.getModule(NoClickDelay.class).getState())
             leftClickCounter = 0;
     }
 
@@ -316,6 +318,6 @@ public abstract class MixinMinecraft {
      */
     @ModifyConstant(method = "getLimitFramerate", constant = @Constant(intValue = 30))
     public int getLimitFramerate(int constant) {
-        return 60;
+        return 30;
     }
 }

@@ -11,6 +11,7 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.TargetStrafe;
 import net.ccbluex.liquidbounce.event.MoveEvent;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.SpeedMode;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
+import net.minecraft.potion.Potion;
 
 public class HypixelStrafeLess extends SpeedMode {
 
@@ -25,19 +26,23 @@ public class HypixelStrafeLess extends SpeedMode {
 
     @Override
     public void onUpdate() {
-        mc.timer.timerSpeed = 1F;
         final Speed speed = LiquidBounce.moduleManager.getModule(Speed.class);
         if(speed == null) return;
 
         if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava()) && !mc.gameSettings.keyBindJump.isKeyDown()) {
-            double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed() * speed.baseStrengthValue.get(), MovementUtils.getSpeed());
+            double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed() + 0.20, MovementUtils.getSpeed());
+
+        if(mc.thePlayer.isPotionActive(Potion.moveSpeed)) {
+			moveSpeed += 0.08 + mc.thePlayer.getActivePotionEffect(Potion.moveSpeed).getAmplifier() * 0.063;
+        }
 
             if (mc.thePlayer.onGround) {
                 if(MovementUtils.isMoving()) mc.thePlayer.jump();
-                if (speed.recalcValue.get()) moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed() * speed.baseStrengthValue.get(), MovementUtils.getSpeed());
-                if(speed.strafeOnDmg.get() && mc.thePlayer.hurtTime > 2) MovementUtils.strafe();
-                moveSpeed *= speed.moveSpeedValue.get();
-            }  
+                if(speed.strafeOnDmg.get() && mc.thePlayer.hurtTime > 8) MovementUtils.strafe();
+                MovementUtils.strafe((float) moveSpeed); //moment
+            }  else if(!mc.thePlayer.onGround) {
+            	// hank
+           }
         } 
     }
 
@@ -51,7 +56,7 @@ public class HypixelStrafeLess extends SpeedMode {
         }
 
         if(mc.thePlayer.onGround && speed.fastFall.get() && Math.abs(event.getY()) < 0.005) {
-        	event.setY(mc.thePlayer.motionY = -0.16);
+        	event.setY(mc.thePlayer.motionY = -0.11);
         }
     }
 }
