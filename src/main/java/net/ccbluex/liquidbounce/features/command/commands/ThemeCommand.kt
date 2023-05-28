@@ -9,16 +9,10 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonParser
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.features.command.Command
-import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification
 import net.ccbluex.liquidbounce.ui.client.hud.Config
-import net.ccbluex.liquidbounce.utils.ClientUtils
-import net.ccbluex.liquidbounce.utils.SettingsUtils
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification
 import net.ccbluex.liquidbounce.utils.misc.HttpUtils
-import net.ccbluex.liquidbounce.utils.misc.StringUtils
-import java.io.File
-import java.io.IOException
 import kotlin.concurrent.thread
-import org.apache.commons.io.FileUtils
 
 class ThemeCommand : Command("theme", arrayOf("thememanager", "tm", "themes")) {
 
@@ -46,7 +40,7 @@ class ThemeCommand : Command("theme", arrayOf("thememanager", "tm", "themes")) {
                 val url = if (args[2].startsWith("http"))
                     args[2]
                 else
-                    "${LiquidBounce.CLIENT_CLOUD}/themes/${args[2].toLowerCase()}"
+                    "${LiquidBounce.CLIENT_CLOUD}/themes/${args[2].lowercase()}"
 
                 chat("Loading theme...")
 

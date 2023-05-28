@@ -11,17 +11,19 @@ import net.ccbluex.liquidbounce.event.Render3DEvent
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
+import net.ccbluex.liquidbounce.features.module.modules.color.ColorMixer
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.block.BlockUtils.canBeClicked
 import net.ccbluex.liquidbounce.utils.block.BlockUtils.getBlock
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
-import net.ccbluex.liquidbounce.value.*
+import net.ccbluex.liquidbounce.value.BoolValue
+import net.ccbluex.liquidbounce.value.IntegerValue
+import net.ccbluex.liquidbounce.value.ListValue
 import net.minecraft.block.Block
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.util.BlockPos
-import net.ccbluex.liquidbounce.features.module.modules.color.ColorMixer
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 
@@ -50,7 +52,7 @@ class BlockOverlay : Module() {
         val block = mc.theWorld.getBlockState(blockPos).block ?: return
         val partialTicks = event.partialTicks
         val rainbowMode = rainbowValue.get()
-        val color = when(rainbowValue.get().toLowerCase()) {
+        val color = when(rainbowValue.get().lowercase()) {
            "crainbow" -> RenderUtils.getRainbowColor(2, 0.9f, 1.0f, 0)
            "skyainbow" -> RenderUtils.skyRainbow(0, 0.9f, 1.0f)
            "fade" -> ColorUtils.fade(Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get(), colorAlphaValue.get()), 0, 100)

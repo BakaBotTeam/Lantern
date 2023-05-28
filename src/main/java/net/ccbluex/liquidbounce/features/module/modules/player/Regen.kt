@@ -11,7 +11,6 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.utils.MovementUtils
-import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.value.ListValue
@@ -41,7 +40,7 @@ class Regen : Module() {
             if(potionEffectValue.get() && !mc.thePlayer.isPotionActive(Potion.regeneration)) 
                 return
             
-            when (modeValue.get().toLowerCase()) {
+            when (modeValue.get().lowercase()) {
                 "vanilla" -> {
                     repeat(speedValue.get()) {
                         mc.netHandler.addToSendQueue(C03PacketPlayer(mc.thePlayer.onGround))

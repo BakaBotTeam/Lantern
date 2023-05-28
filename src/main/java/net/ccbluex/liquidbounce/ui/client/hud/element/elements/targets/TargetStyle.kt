@@ -7,7 +7,6 @@ package net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets
 
 import net.ccbluex.liquidbounce.ui.client.hud.element.Border
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Target
-import net.ccbluex.liquidbounce.utils.AnimationUtils
 import net.ccbluex.liquidbounce.utils.MinecraftInstance
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
@@ -17,14 +16,12 @@ import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.ResourceLocation
-
 import org.lwjgl.opengl.GL11.*
-import kotlin.math.pow
-
 import java.awt.Color
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
-import java.util.Locale
+import java.util.*
+import kotlin.math.pow
 
 abstract class TargetStyle(val name: String, val targetInstance: Target, val shaderSupport: Boolean): MinecraftInstance() {
 
@@ -36,7 +33,7 @@ abstract class TargetStyle(val name: String, val targetInstance: Target, val sha
     val decimalFormat3 = DecimalFormat("0.#", DecimalFormatSymbols(Locale.ENGLISH))
 
     val shadowOpaque: Color
-        get() = ColorUtils.reAlpha(when (targetInstance.shadowColorMode.get().toLowerCase()) {
+        get() = ColorUtils.reAlpha(when (targetInstance.shadowColorMode.get().lowercase()) {
             "background" -> targetInstance.bgColor
             "custom" -> Color(targetInstance.shadowColorRedValue.get(), targetInstance.shadowColorGreenValue.get(), targetInstance.shadowColorBlueValue.get())
             else -> targetInstance.barColor

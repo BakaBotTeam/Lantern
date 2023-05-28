@@ -24,7 +24,7 @@ class MacroCommand : Command("macro", emptyArray()) {
                 chatSyntax("macro <list/clear/add/remove>")
                 return
             }
-            when (args[1].toLowerCase()) {
+            when (args[1].lowercase()) {
                 "add" -> {
                     if (args.size < 4) {
                         chatSyntax("macro add <key name> <message>")
@@ -57,7 +57,7 @@ class MacroCommand : Command("macro", emptyArray()) {
             }
         }
         if (args.size == 2) {
-            when (args[1].toLowerCase()) {
+            when (args[1].lowercase()) {
                 "list" -> {
                     chat("§6§lMacros:")
                     MacroManager.macroMapping.forEach {

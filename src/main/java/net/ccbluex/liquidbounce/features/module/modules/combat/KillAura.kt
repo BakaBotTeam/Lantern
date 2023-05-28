@@ -18,16 +18,9 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.TargetStrafe
 import net.ccbluex.liquidbounce.features.module.modules.player.Blink
 import net.ccbluex.liquidbounce.features.module.modules.render.FreeCam
 import net.ccbluex.liquidbounce.features.module.modules.world.Scaffold
-import net.ccbluex.liquidbounce.utils.ClientUtils
-import net.ccbluex.liquidbounce.utils.EntityUtils
-import net.ccbluex.liquidbounce.utils.MovementUtils
-import net.ccbluex.liquidbounce.utils.PacketUtils
-import net.ccbluex.liquidbounce.utils.RaycastUtils
-import net.ccbluex.liquidbounce.utils.RotationUtils
-import net.ccbluex.liquidbounce.utils.Rotation
+import net.ccbluex.liquidbounce.utils.*
 import net.ccbluex.liquidbounce.utils.extensions.getDistanceToEntityBox
 import net.ccbluex.liquidbounce.utils.misc.RandomUtils
-import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.ccbluex.liquidbounce.utils.timer.TimeUtils
 import net.ccbluex.liquidbounce.value.BoolValue
@@ -44,20 +37,16 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemAxe
 import net.minecraft.item.ItemSword
 import net.minecraft.network.play.client.*
+import net.minecraft.network.play.server.S12PacketEntityVelocity
 import net.minecraft.potion.Potion
-import net.minecraft.util.BlockPos
-import net.minecraft.util.EnumFacing
-import net.minecraft.util.MathHelper
-import net.minecraft.util.MovingObjectPosition
-import net.minecraft.util.Vec3
+import net.minecraft.util.*
 import net.minecraft.world.WorldSettings
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
-import java.awt.Color
 import java.util.*
+import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.cos
 import kotlin.math.sin
 
 @ModuleInfo(name = "KillAura", spacedName = "Kill Aura", description = "Automatically attacks targets around you.",
@@ -175,7 +164,7 @@ class KillAura : Module() {
     private val aacValue = BoolValue("AAC", false)
 
     private val silentRotationValue = BoolValue("SilentRotation", true, { !rotations.get().equals("none", true) })
-    val rotationStrafeValue = ListValue("Strafe", arrayOf("Off", "Strict", "Silent"), "Off")
+    val rotationStrafeValue = ListValue("Strafe", arrayOf("Off", "Strict", "SmartStrict", "Silent", "SmartSilent"), "Off")
     
     private val fovValue = FloatValue("FOV", 180f, 0f, 180f)
 
@@ -268,6 +257,9 @@ class KillAura : Module() {
 
     var spinYaw = 0F
 
+    // Velocity check
+    private var velocityFlag = false
+
     // I don't know
     //var focusEntityName = mutableListOf<String>()
 
@@ -327,6 +319,20 @@ class KillAura : Module() {
     }
 
 
+    fun smartStrafeCheck(): Boolean {
+        return if (velocityFlag) {
+            if (mc.thePlayer.hurtTime >= 13 || !mc.thePlayer.onGround) {
+                true
+            } else {
+                velocityFlag = false
+                false
+            }
+        } else {
+            false
+        }
+    }
+
+
     /**
      * Strafe event
      */
@@ -344,38 +350,42 @@ class KillAura : Module() {
                 MovementUtils.strafeCustom(MovementUtils.getSpeed(), strafingData[0], strafingData[1], strafingData[2])
                 event.cancelEvent()
             }
-            else when (rotationStrafeValue.get().toLowerCase()) {
-                "strict" -> {
-                    val (yaw) = RotationUtils.targetRotation ?: return
-                    var strafe = event.strafe
-                    var forward = event.forward
-                    val friction = event.friction
+            else when (rotationStrafeValue.get().lowercase()) {
+                "strict", "smartstrict" -> {
+                    if (rotationStrafeValue.get().lowercase().indexOf("smart") == -1 || smartStrafeCheck()) {
+                        val (yaw) = RotationUtils.targetRotation ?: return
+                        var strafe = event.strafe
+                        var forward = event.forward
+                        val friction = event.friction
 
-                    var f = strafe * strafe + forward * forward
+                        var f = strafe * strafe + forward * forward
 
-                    if (f >= 1.0E-4F) {
-                        f = MathHelper.sqrt_float(f)
+                        if (f >= 1.0E-4F) {
+                            f = MathHelper.sqrt_float(f)
 
-                        if (f < 1.0F)
-                            f = 1.0F
+                            if (f < 1.0F)
+                                f = 1.0F
 
-                        f = friction / f
-                        strafe *= f
-                        forward *= f
+                            f = friction / f
+                            strafe *= f
+                            forward *= f
 
-                        val yawSin = MathHelper.sin((yaw * Math.PI / 180F).toFloat())
-                        val yawCos = MathHelper.cos((yaw * Math.PI / 180F).toFloat())
+                            val yawSin = MathHelper.sin((yaw * Math.PI / 180F).toFloat())
+                            val yawCos = MathHelper.cos((yaw * Math.PI / 180F).toFloat())
 
-                        mc.thePlayer.motionX += strafe * yawCos - forward * yawSin
-                        mc.thePlayer.motionZ += forward * yawCos + strafe * yawSin
+                            mc.thePlayer.motionX += strafe * yawCos - forward * yawSin
+                            mc.thePlayer.motionZ += forward * yawCos + strafe * yawSin
+                        }
+                        event.cancelEvent()
                     }
-                    event.cancelEvent()
                 }
-                "silent" -> {
-                    update()
+                "silent", "smartsilent" -> {
+                    if (rotationStrafeValue.get().lowercase().indexOf("smart") == -1 || smartStrafeCheck()) {
+                        update()
 
-                    RotationUtils.targetRotation.applyStrafeToPlayer(event)
-                    event.cancelEvent()
+                        RotationUtils.targetRotation.applyStrafeToPlayer(event)
+                        event.cancelEvent()
+                    }
                 }
             }
         }
@@ -413,6 +423,9 @@ class KillAura : Module() {
 
         if (packet is C09PacketHeldItemChange)
             verusBlocking = false
+
+        if (packet is S12PacketEntityVelocity && packet.entityID == mc.thePlayer.entityId && LiquidBounce.moduleManager[Velocity::class.java]?.state == false)
+            velocityFlag = true
     }
 
     /**
@@ -632,7 +645,7 @@ class KillAura : Module() {
         val lookingTargets = mutableListOf<EntityLivingBase>()
 
         for (entity in mc.theWorld.loadedEntityList) {
-            if (entity !is EntityLivingBase || !isEnemy(entity) || (switchMode && prevTargetEntities.contains(entity.entityId))/* || (!focusEntityName.isEmpty() && !focusEntityName.contains(entity.name.toLowerCase()))*/)
+            if (entity !is EntityLivingBase || !isEnemy(entity) || (switchMode && prevTargetEntities.contains(entity.entityId))/* || (!focusEntityName.isEmpty() && !focusEntityName.contains(entity.name.lowercase()))*/)
                 continue
 
             val distance = mc.thePlayer.getDistanceToEntityBox(entity)
@@ -643,7 +656,7 @@ class KillAura : Module() {
         }
 
         // Sort targets by priority
-        when (priorityValue.get().toLowerCase()) {
+        when (priorityValue.get().lowercase()) {
             "distance" -> targets.sortBy { mc.thePlayer.getDistanceToEntityBox(it) } // Sort by distance
             "health" -> targets.sortBy { it.health } // Sort by health
             "direction" -> targets.sortBy { RotationUtils.getRotationDifference(it) } // Sort by FOV

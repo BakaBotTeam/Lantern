@@ -7,15 +7,11 @@ package net.ccbluex.liquidbounce.features.command.commands
 
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.features.command.Command
-import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification
 import net.ccbluex.liquidbounce.ui.client.hud.Config
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification
 import net.ccbluex.liquidbounce.utils.ClientUtils
-import net.ccbluex.liquidbounce.utils.SettingsUtils
-import net.ccbluex.liquidbounce.utils.misc.StringUtils
 import java.io.File
 import java.io.IOException
-
-import org.apache.commons.io.FileUtils
 
 class LocalThemeCommand : Command("localtheme", arrayOf("localthememanager", "ltm", "localthemes")) {
     /**
@@ -118,7 +114,7 @@ class LocalThemeCommand : Command("localtheme", arrayOf("localthememanager", "lt
         return when (args.size) {
             1 -> listOf("delete", "list", "load", "save").filter { it.startsWith(args[0], true) }
             2 -> {
-                when (args[0].toLowerCase()) {
+                when (args[0].lowercase()) {
                     "delete", "load" -> {
                         val settings = this.getLocalThemes() ?: return emptyList()
 

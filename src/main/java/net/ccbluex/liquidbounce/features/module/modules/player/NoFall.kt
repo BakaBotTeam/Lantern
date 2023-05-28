@@ -32,7 +32,7 @@ import net.minecraft.init.Items
 import net.minecraft.item.ItemBlock
 import net.minecraft.item.ItemBucket
 import net.minecraft.network.play.client.C03PacketPlayer
-import net.minecraft.network.play.client.C03PacketPlayer.*
+import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition
 import net.minecraft.network.play.client.C09PacketHeldItemChange
 import net.minecraft.network.play.server.S08PacketPlayerPosLook
 import net.minecraft.network.play.server.S12PacketEntityVelocity
@@ -174,8 +174,8 @@ class NoFall : Module() {
                 mc.timer.timerSpeed = 1F
         }
 
-        when (typeValue.get().toLowerCase()) {
-            "packet" -> when (packetMode.get().toLowerCase()) {
+        when (typeValue.get().lowercase()) {
+            "packet" -> when (packetMode.get().lowercase()) {
                 "default" -> {
                     if (mc.thePlayer.fallDistance > 2F)
                         mc.netHandler.addToSendQueue(C03PacketPlayer(true))
@@ -211,7 +211,7 @@ class NoFall : Module() {
                     needSpoof = true
                 }
             }
-            "matrix" -> when (matrixMode.get().toLowerCase()) {
+            "matrix" -> when (matrixMode.get().lowercase()) {
                 "old" -> {
                     if (mc.thePlayer.fallDistance > 3)
                         isDmgFalling = true
@@ -253,7 +253,7 @@ class NoFall : Module() {
                     }
                 }
             }
-            "aac" -> when (aacMode.get().toLowerCase()) {
+            "aac" -> when (aacMode.get().lowercase()) {
                 "default" -> {
                     if (mc.thePlayer.fallDistance > 2f) {
                         mc.netHandler.addToSendQueue(C03PacketPlayer(true))
@@ -549,7 +549,7 @@ class NoFall : Module() {
             }
 
             if (typeValue.get().equals("hypixel", true)) {
-                when (hypixelMode.get().toLowerCase()) {
+                when (hypixelMode.get().lowercase()) {
                     "default" -> if (mc.thePlayer.fallDistance > 1.5) {
                         packet.onGround = mc.thePlayer.ticksExisted % 2 == 0
                     }
@@ -566,7 +566,7 @@ class NoFall : Module() {
             }
 
             if (typeValue.get().equals("aac", true)) {
-                when (aacMode.get().toLowerCase()) {
+                when (aacMode.get().lowercase()) {
                     "4.x" -> if (aac4Fakelag) {
                         event.cancelEvent()
                         if (packetModify) {

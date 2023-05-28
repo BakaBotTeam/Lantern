@@ -12,12 +12,16 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.TargetSty
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.utils.Particle
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.utils.ShapeType
 import net.ccbluex.liquidbounce.ui.font.Fonts
-import net.ccbluex.liquidbounce.utils.extensions.darker
 import net.ccbluex.liquidbounce.utils.extensions.getDistanceToEntityBox
-import net.ccbluex.liquidbounce.utils.render.*
 import net.ccbluex.liquidbounce.utils.misc.RandomUtils
-import net.ccbluex.liquidbounce.value.*
-import net.minecraft.client.gui.Gui
+import net.ccbluex.liquidbounce.utils.render.BlendUtils
+import net.ccbluex.liquidbounce.utils.render.ColorUtils
+import net.ccbluex.liquidbounce.utils.render.RenderUtils
+import net.ccbluex.liquidbounce.utils.render.Stencil
+import net.ccbluex.liquidbounce.value.BoolValue
+import net.ccbluex.liquidbounce.value.FloatValue
+import net.ccbluex.liquidbounce.value.IntegerValue
+import net.ccbluex.liquidbounce.value.ListValue
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.player.EntityPlayer
 import org.lwjgl.opengl.GL11
@@ -82,9 +86,9 @@ class Rice(inst: Target): TargetStyle("Rice", inst, true) {
                     var parDistY = RandomUtils.nextFloat(-particleRange.get(), particleRange.get())
                     var firstChar = RandomUtils.random(1, "${if (riceParticleCircle.get().equals("none", true)) "" else "c"}${if (riceParticleRect.get().equals("none", true)) "" else "r"}${if (riceParticleTriangle.get().equals("none", true)) "" else "t"}")
                     var drawType = ShapeType.getTypeFromName(when (firstChar) {
-                        "c" -> "c_${riceParticleCircle.get().toLowerCase()}"
-                        "r" -> "r_${riceParticleRect.get().toLowerCase()}"
-                        else -> "t_${riceParticleTriangle.get().toLowerCase()}"
+                        "c" -> "c_${riceParticleCircle.get().lowercase()}"
+                        "r" -> "r_${riceParticleRect.get().lowercase()}"
+                        else -> "t_${riceParticleTriangle.get().lowercase()}"
                     }) ?: break
 
                     particleList.add(Particle(
@@ -141,7 +145,7 @@ class Rice(inst: Target): TargetStyle("Rice", inst, true) {
 
         GL11.glDisable(GL11.GL_BLEND)
         Stencil.erase(true)
-        when (targetInstance.colorModeValue.get().toLowerCase()) {
+        when (targetInstance.colorModeValue.get().lowercase()) {
             "custom", "health" -> RenderUtils.drawRect(5F, 42F, length - maxHealthLength, 48F, targetInstance.barColor.rgb)
             else -> for (i in 0..(gradientLoopValue.get() - 1)) {
                 val barStart = i.toDouble() / gradientLoopValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()

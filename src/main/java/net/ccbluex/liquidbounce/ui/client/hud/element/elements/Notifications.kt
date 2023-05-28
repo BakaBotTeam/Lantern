@@ -7,30 +7,26 @@
  */
 package net.ccbluex.liquidbounce.ui.client.hud.element.elements
 
-import net.ccbluex.liquidbounce.LiquidBounce
-import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.ccbluex.liquidbounce.LiquidBounce.hud
-import net.ccbluex.liquidbounce.value.BoolValue
-import net.ccbluex.liquidbounce.value.FloatValue
-import net.ccbluex.liquidbounce.value.ListValue
-import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.ui.client.hud.designer.GuiHudDesigner
 import net.ccbluex.liquidbounce.ui.client.hud.element.Border
 import net.ccbluex.liquidbounce.ui.client.hud.element.Element
 import net.ccbluex.liquidbounce.ui.client.hud.element.ElementInfo
 import net.ccbluex.liquidbounce.ui.client.hud.element.Side
+import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.render.AnimationUtils
 import net.ccbluex.liquidbounce.utils.render.BlurUtils
-import net.ccbluex.liquidbounce.utils.render.Stencil
-import net.minecraft.client.gui.Gui
-import net.minecraft.client.renderer.GlStateManager
-import net.ccbluex.liquidbounce.ui.font.Fonts
-import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
+import net.ccbluex.liquidbounce.utils.render.Stencil
+import net.ccbluex.liquidbounce.utils.timer.MSTimer
+import net.ccbluex.liquidbounce.value.BoolValue
+import net.ccbluex.liquidbounce.value.FloatValue
+import net.ccbluex.liquidbounce.value.IntegerValue
+import net.ccbluex.liquidbounce.value.ListValue
+import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.util.ResourceLocation
-import java.awt.Color
-
 import org.lwjgl.opengl.GL11
+import java.awt.Color
 
 @ElementInfo(name = "Notifications", single = true)
 class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
@@ -70,7 +66,7 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
                 if (indexz == 0 && styleValue.get().equals("material", true) && side.vertical != Side.Vertical.DOWN) animationY -= i.notifHeight - (if (barValue.get()) 2F else 0F)
                 i.drawNotification(animationY, this)
                 if (indexz < notifications.size - 1) indexz++
-                animationY += (when (styleValue.get().toLowerCase()) {
+                animationY += (when (styleValue.get().lowercase()) {
                                     "compact" -> 20F
                                     "full" -> 30F
                                     "roundedfull" -> 30F
@@ -95,7 +91,7 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
         return null
     }
 
-    private fun getNotifBorder() = when (styleValue.get().toLowerCase()) {
+    private fun getNotifBorder() = when (styleValue.get().lowercase()) {
         "full" -> Border(-130F, -58F, 0F, -30F)
         "roundedfull" -> Border(-130F, -58F, 0F, -30F)
         "new" -> Border(-130F, -58F, 0F, -30F)
@@ -195,7 +191,7 @@ class Notification(message : String, type : Type, displayLength: Long) {
 
         var y = firstY
 
-        when (style.toLowerCase()) {
+        when (style.lowercase()) {
             "compact" -> {
                 GlStateManager.resetColor()
 
