@@ -16,7 +16,9 @@ import net.ccbluex.liquidbounce.features.special.MacroManager
 import net.ccbluex.liquidbounce.file.FileManager
 import net.ccbluex.liquidbounce.script.ScriptManager
 import net.ccbluex.liquidbounce.script.remapper.Remapper.loadSrg
-import net.ccbluex.liquidbounce.tabs.*
+import net.ccbluex.liquidbounce.tabs.BlocksTab
+import net.ccbluex.liquidbounce.tabs.ExploitsTab
+import net.ccbluex.liquidbounce.tabs.HeadsTab
 import net.ccbluex.liquidbounce.ui.client.altmanager.GuiAltManager
 import net.ccbluex.liquidbounce.ui.client.clickgui.ClickGui
 import net.ccbluex.liquidbounce.ui.client.hud.HUD
@@ -33,7 +35,7 @@ object LiquidBounce {
     // Client information
     const val CLIENT_NAME = "Lantern"
     const val CLIENT_VERSION = "0.2"
-    const val CLIENT_CREATOR = "CCBlueX, exit-scammed, PlusPlusMC"
+    const val CLIENT_CREATOR = "CCBlueX, exit-scammed, PlusPlusMC, BakaBotTeam"
     const val CLIENT_CLOUD = "https://mossware.github.io/LiquidCloud/LiquidBounce"
 
     var isStarting = false
