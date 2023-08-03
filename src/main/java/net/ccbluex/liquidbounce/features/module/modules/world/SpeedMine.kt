@@ -15,6 +15,7 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.utils.PacketUtils.sendPacketNoEvent
+import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.FloatValue
 import net.minecraft.init.Blocks
 import net.minecraft.network.play.client.C07PacketPlayerDigging
@@ -24,6 +25,7 @@ import net.minecraft.util.EnumFacing
 @ModuleInfo(name = "SpeedMine", spacedName = "Speed Mine", description = "Mines blocks faster. (pasted edition)", category = ModuleCategory.WORLD)
 class SpeedMine : Module() {
     private val speed = FloatValue("Speed", 1.5f, 1f, 3f)
+    private val resetDamage = BoolValue("ResetDamage", false)
     private var facing: EnumFacing? = null
     private var pos: BlockPos? = null
     private var boost = false
@@ -42,7 +44,12 @@ class SpeedMine : Module() {
                 }
                 if (damage >= 1) {
                     try {
-                        mc.theWorld.setBlockState(pos, Blocks.air.defaultState, 11)
+                        if (!resetDamage.get()) {
+                            mc.theWorld.setBlockState(pos, Blocks.air.defaultState, 11)
+                        } else {
+                            mc.playerController.curBlockDamageMP = 0.0f
+                            mc.theWorld.sendBlockBreakProgress(mc.thePlayer.getEntityId(), pos, -1)
+                        }
                     } catch (ex: Exception) {
                         ex.printStackTrace()
                         return

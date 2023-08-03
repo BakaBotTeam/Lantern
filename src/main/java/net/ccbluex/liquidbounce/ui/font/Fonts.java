@@ -1,70 +1,42 @@
 /*
- * LiquidBounce+ Hacked Client
+ * LiquidBounce Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
- * https://github.com/WYSI-Foundation/LiquidBouncePlus/
+ * https://github.com/CCBlueX/LiquidBounce/
  */
 package net.ccbluex.liquidbounce.ui.font;
 
 import com.google.gson.*;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.utils.ClientUtils;
+import net.ccbluex.liquidbounce.utils.MinecraftInstance;
 import net.ccbluex.liquidbounce.utils.misc.HttpUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class Fonts {
-
-    // in fact these "roboto medium" is product sans lol
-    @FontDetails(fontName = "Roboto Medium", fontSize = 35)
-    public static GameFontRenderer font35;
-
-    @FontDetails(fontName = "Roboto Medium", fontSize = 40)
-    public static GameFontRenderer font40;
-
-    @FontDetails(fontName = "Roboto Medium", fontSize = 72)
-    public static GameFontRenderer font72;
-
-    @FontDetails(fontName = "Roboto Medium", fontSize = 30)
-    public static GameFontRenderer fontSmall;
-
-    @FontDetails(fontName = "Roboto Medium", fontSize = 24)
-    public static GameFontRenderer fontTiny;
-
-    @FontDetails(fontName = "Roboto Medium", fontSize = 52)
-    public static GameFontRenderer fontLarge;
-
-    @FontDetails(fontName = "SFUI Regular", fontSize = 35)
-    public static GameFontRenderer fontSFUI35;
-
-    @FontDetails(fontName = "SFUI Regular", fontSize = 40)
-    public static GameFontRenderer fontSFUI40;
-
-    @FontDetails(fontName = "Roboto Bold", fontSize = 180)
-    public static GameFontRenderer fontBold180;
-
-    @FontDetails(fontName = "Tahoma Bold", fontSize = 35)
-    public static GameFontRenderer fontTahoma;
-
-    @FontDetails(fontName = "Tahoma Bold", fontSize = 30)
-    public static GameFontRenderer fontTahoma30;
-
-    public static TTFFontRenderer fontTahomaSmall;
-
-    @FontDetails(fontName = "Bangers", fontSize = 45)
-    public static GameFontRenderer fontBangers;
+public class Fonts extends MinecraftInstance {
 
     @FontDetails(fontName = "Minecraft Font")
-    public static final FontRenderer minecraftFont = Minecraft.getMinecraft().fontRendererObj;
+    public static final FontRenderer minecraftFont = mc.fontRendererObj;
+    private static final HashMap<FontInfo, FontRenderer> CUSTOM_FONT_RENDERERS = new HashMap<>();
+    @FontDetails(fontName = "MiSans Medium", fontSize = 35)
+    public static GameFontRenderer font35;
+    @FontDetails(fontName = "MiSans Medium", fontSize = 40)
+    public static GameFontRenderer font40;
 
-    private static final List<GameFontRenderer> CUSTOM_FONT_RENDERERS = new ArrayList<>();
+    @FontDetails(fontName = "Misans Bold", fontSize = 90)
+    public static GameFontRenderer fontBold90;
+
+    @FontDetails(fontName = "MiSans Bold", fontSize = 180)
+    public static GameFontRenderer fontBold180;
 
     public static void loadFonts() {
         long l = System.currentTimeMillis();
@@ -73,19 +45,10 @@ public class Fonts {
 
         downloadFonts();
 
-        font35 = new GameFontRenderer(getFont("Roboto-Medium.ttf", 35));
-        font40 = new GameFontRenderer(getFont("Roboto-Medium.ttf", 40));
-        font72 = new GameFontRenderer(getFont("Roboto-Medium.ttf", 72));
-        fontSmall = new GameFontRenderer(getFont("Roboto-Medium.ttf", 30));
-        fontTiny = new GameFontRenderer(getFont("Roboto-Medium.ttf", 24));
-        fontLarge = new GameFontRenderer(getFont("Roboto-Medium.ttf", 60));
-        fontSFUI35 = new GameFontRenderer(getFont("sfui.ttf", 35));
-        fontSFUI40 = new GameFontRenderer(getFont("sfui.ttf", 40));
-        fontBold180 = new GameFontRenderer(getFont("Roboto-Bold.ttf", 180));
-        fontTahoma = new GameFontRenderer(getFont("TahomaBold.ttf", 35));
-        fontTahoma30 = new GameFontRenderer(getFont("TahomaBold.ttf", 30));
-        fontTahomaSmall = new TTFFontRenderer(getFont("Tahoma.ttf", 11));
-        fontBangers = new GameFontRenderer(getFont("Bangers-Regular.ttf", 45));
+        font35 = new GameFontRenderer(getFont("MiSans 开发下载字重\\MiSans-Medium.ttf", 35));
+        font40 = new GameFontRenderer(getFont("MiSans 开发下载字重\\MiSans-Medium.ttf", 40));
+        fontBold90 = new GameFontRenderer(getFont("MiSans 开发下载字重\\MiSans-Bold.ttf", 90));
+        fontBold180 = new GameFontRenderer(getFont("MiSans 开发下载字重\\MiSans-Bold.ttf", 180));
 
         try {
             CUSTOM_FONT_RENDERERS.clear();
@@ -106,7 +69,9 @@ public class Fonts {
 
                     final JsonObject fontObject = (JsonObject) element;
 
-                    CUSTOM_FONT_RENDERERS.add(new GameFontRenderer(getFont(fontObject.get("fontFile").getAsString(), fontObject.get("fontSize").getAsInt())));
+                    Font font = getFont(fontObject.get("fontFile").getAsString(), fontObject.get("fontSize").getAsInt());
+
+                    CUSTOM_FONT_RENDERERS.put(new FontInfo(font), new GameFontRenderer(font));
                 }
             } else {
                 fontsFile.createNewFile();
@@ -124,17 +89,11 @@ public class Fonts {
 
     private static void downloadFonts() {
         try {
-            final File outputFile = new File(LiquidBounce.fileManager.fontsDir, "roboto.zip");
-            final File sfuiFile = new File(LiquidBounce.fileManager.fontsDir, "sfui.ttf");
-            final File prodSansFile = new File(LiquidBounce.fileManager.fontsDir, "Roboto-Medium.ttf");
-            final File prodBoldFile = new File(LiquidBounce.fileManager.fontsDir, "Roboto-Bold.ttf");
-            final File tahomaFile = new File(LiquidBounce.fileManager.fontsDir, "TahomaBold.ttf");
-            final File tahomaReFile = new File(LiquidBounce.fileManager.fontsDir, "Tahoma.ttf");
-            final File bangersFile = new File(LiquidBounce.fileManager.fontsDir, "Bangers-Regular.ttf");
+            final File outputFile = new File(LiquidBounce.fileManager.fontsDir, "MiSans.zip");
 
-            if (!outputFile.exists() || !sfuiFile.exists() || !prodSansFile.exists() || !prodBoldFile.exists() || !tahomaFile.exists() || !tahomaReFile.exists() || !bangersFile.exists()) {
+            if (!outputFile.exists()) {
                 ClientUtils.getLogger().info("Downloading fonts...");
-                HttpUtils.download("https://wysi-foundation.github.io/LiquidCloud/LiquidBounce/fonts/fonts.zip", outputFile);
+                HttpUtils.download("https://cdn.cnbj1.fds.api.mi-img.com/vipmlmodel/font/MiSans/MiSans.zip", outputFile);
                 ClientUtils.getLogger().info("Extract fonts...");
                 extractZip(outputFile.getPath(), LiquidBounce.fileManager.fontsDir.getPath());
             }
@@ -148,10 +107,10 @@ public class Fonts {
             try {
                 field.setAccessible(true);
 
-                final Object o = field.get(null);
+                Object o = field.get(null);
 
                 if (o instanceof FontRenderer) {
-                    final FontDetails fontDetails = field.getAnnotation(FontDetails.class);
+                    FontDetails fontDetails = field.getAnnotation(FontDetails.class);
 
                     if (fontDetails.fontName().equals(name) && fontDetails.fontSize() == size)
                         return (FontRenderer) o;
@@ -161,17 +120,10 @@ public class Fonts {
             }
         }
 
-        for (final GameFontRenderer liquidFontRenderer : CUSTOM_FONT_RENDERERS) {
-            final Font font = liquidFontRenderer.getDefaultFont().getFont();
-
-            if (font.getName().equals(name) && font.getSize() == size)
-                return liquidFontRenderer;
-        }
-
-        return minecraftFont;
+        return CUSTOM_FONT_RENDERERS.getOrDefault(new FontInfo(name, size), minecraftFont);
     }
 
-    public static Object[] getFontDetails(final FontRenderer fontRenderer) {
+    public static FontInfo getFontDetails(final FontRenderer fontRenderer) {
         for (final Field field : Fonts.class.getDeclaredFields()) {
             try {
                 field.setAccessible(true);
@@ -181,17 +133,16 @@ public class Fonts {
                 if (o.equals(fontRenderer)) {
                     final FontDetails fontDetails = field.getAnnotation(FontDetails.class);
 
-                    return new Object[] {fontDetails.fontName(), fontDetails.fontSize()};
+                    return new FontInfo(fontDetails.fontName(), fontDetails.fontSize());
                 }
             } catch (final IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
 
-        if (fontRenderer instanceof GameFontRenderer) {
-            final Font font = ((GameFontRenderer) fontRenderer).getDefaultFont().getFont();
-
-            return new Object[] {font.getName(), font.getSize()};
+        for (Map.Entry<FontInfo, FontRenderer> entry : CUSTOM_FONT_RENDERERS.entrySet()) {
+            if (entry.getValue() == fontRenderer)
+                return entry.getKey();
         }
 
         return null;
@@ -212,14 +163,14 @@ public class Fonts {
             }
         }
 
-        fonts.addAll(Fonts.CUSTOM_FONT_RENDERERS);
+        fonts.addAll(Fonts.CUSTOM_FONT_RENDERERS.values());
 
         return fonts;
     }
 
     private static Font getFont(final String fontName, final int size) {
         try {
-            final InputStream inputStream = new FileInputStream(new File(LiquidBounce.fileManager.fontsDir, fontName));
+            final InputStream inputStream = Files.newInputStream(new File(LiquidBounce.fileManager.fontsDir, fontName).toPath());
             Font awtClientFont = Font.createFont(Font.TRUETYPE_FONT, inputStream);
             awtClientFont = awtClientFont.deriveFont(Font.PLAIN, size);
             inputStream.close();
@@ -237,22 +188,27 @@ public class Fonts {
         try {
             final File folder = new File(outputFolder);
 
-            if(!folder.exists()) folder.mkdir();
+            if (!folder.exists()) folder.mkdir();
 
-            final ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFile));
+            final ZipInputStream zipInputStream = new ZipInputStream(Files.newInputStream(Paths.get(zipFile)));
 
             ZipEntry zipEntry = zipInputStream.getNextEntry();
             while (zipEntry != null) {
                 File newFile = new File(outputFolder + File.separator + zipEntry.getName());
-                new File(newFile.getParent()).mkdirs();
 
-                FileOutputStream fileOutputStream = new FileOutputStream(newFile);
+                if (zipEntry.isDirectory()) {
+                    newFile.mkdir();
+                } else {
+                    new File(newFile.getParent()).mkdirs();
 
-                int i;
-                while ((i = zipInputStream.read(buffer)) > 0)
-                    fileOutputStream.write(buffer, 0, i);
+                    FileOutputStream fileOutputStream = new FileOutputStream(newFile);
 
-                fileOutputStream.close();
+                    int i;
+                    while ((i = zipInputStream.read(buffer)) > 0)
+                        fileOutputStream.write(buffer, 0, i);
+
+                    fileOutputStream.close();
+                }
                 zipEntry = zipInputStream.getNextEntry();
             }
 
@@ -262,4 +218,45 @@ public class Fonts {
             e.printStackTrace();
         }
     }
+
+    public static class FontInfo {
+        private final String name;
+        private final int fontSize;
+
+        public FontInfo(String name, int fontSize) {
+            this.name = name;
+            this.fontSize = fontSize;
+        }
+
+        public FontInfo(Font font) {
+            this(font.getName(), font.getSize());
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getFontSize() {
+            return fontSize;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            FontInfo fontInfo = (FontInfo) o;
+
+            if (fontSize != fontInfo.fontSize) return false;
+            return Objects.equals(name, fontInfo.name);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = name != null ? name.hashCode() : 0;
+            result = 31 * result + fontSize;
+            return result;
+        }
+    }
+
 }

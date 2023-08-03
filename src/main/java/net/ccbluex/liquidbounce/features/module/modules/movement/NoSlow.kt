@@ -27,11 +27,12 @@ import net.minecraft.network.play.client.C03PacketPlayer.*
 import net.minecraft.network.play.server.S30PacketWindowItems
 import net.minecraft.util.BlockPos
 import net.minecraft.util.EnumFacing
+import kotlin.random.Random
 
 @ModuleInfo(name = "NoSlow", spacedName = "No Slow", category = ModuleCategory.MOVEMENT, description = "Prevent you from getting slowed down by items (swords, foods, etc.) and liquids.")
 class NoSlow : Module() {
     private val msTimer = MSTimer()
-    private val modeValue = ListValue("PacketMode", arrayOf("Vanilla", "Watchdog", "Watchdog2", "OldWatchdog", "OldHypixel", "Blink", "Experimental", "NCP", "AAC", "AAC5", "Custom"), "Vanilla")
+    private val modeValue = ListValue("PacketMode", arrayOf("Vanilla", "NewWatchdog", "Watchdog", "Watchdog2", "OldWatchdog", "OldHypixel", "Blink", "Experimental", "NCP", "AAC", "AAC5", "Custom"), "Vanilla")
     private val blockForwardMultiplier = FloatValue("BlockForwardMultiplier", 1.0F, 0.2F, 1.0F, "x")
     private val blockStrafeMultiplier = FloatValue("BlockStrafeMultiplier", 1.0F, 0.2F, 1.0F, "x")
     private val consumeForwardMultiplier = FloatValue("ConsumeForwardMultiplier", 1.0F, 0.2F, 1.0F, "x")
@@ -64,6 +65,8 @@ class NoSlow : Module() {
     private var fasterDelay = false
     private var placeDelay = 0L
     private val timer = MSTimer()
+
+    private val random = Random(System.currentTimeMillis())
 
     override fun onEnable() {
         blinkPackets.clear()
@@ -189,7 +192,7 @@ class NoSlow : Module() {
             "aac5" -> if (event.eventState == EventState.POST && (mc.thePlayer.isUsingItem || mc.thePlayer.isBlocking || killAura.blockingStatus)) {
                 mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(BlockPos(-1, -1, -1), 255, mc.thePlayer.inventory.getCurrentItem(), 0f, 0f, 0f))
             }
-            "watchdog" -> if (testValue.get() && (!killAura.state || !killAura.blockingStatus) 
+            "watchdog" -> if (testValue.get() && (!killAura.state || !killAura.blockingStatus)
                 && event.eventState == EventState.PRE
                 && mc.thePlayer.itemInUse != null && mc.thePlayer.itemInUse.item != null) {
                 val item = mc.thePlayer.itemInUse.item
@@ -225,6 +228,20 @@ class NoSlow : Module() {
                             fasterDelay = true
                         timer.reset()
                     }
+                }
+            }
+            "newwatchdog" -> {
+                if (!mc.thePlayer.isBlocking && !killAura.blockingStatus &&
+                    mc.thePlayer.inventory.getCurrentItem().item !is ItemSword)
+                    return
+                if (event.eventState != EventState.PRE && msTimer.hasTimePassed(random.nextLong(70L, 90L))) {
+                    // switch item
+                    val currentItem = mc.thePlayer.inventory.currentItem
+                    val switchTo = if (currentItem == 5) 1 else 5
+                    mc.netHandler.addToSendQueue(C09PacketHeldItemChange(switchTo))
+                    mc.netHandler.addToSendQueue(C09PacketHeldItemChange(currentItem))
+                    mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()))
+                    msTimer.reset()
                 }
             }
             else -> {

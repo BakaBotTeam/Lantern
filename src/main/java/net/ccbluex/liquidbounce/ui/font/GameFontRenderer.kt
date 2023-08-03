@@ -22,10 +22,11 @@ import java.awt.Font
 class GameFontRenderer(font: Font) : FontRenderer(Minecraft.getMinecraft().gameSettings,
         ResourceLocation("textures/font/ascii.png"), if (ClassUtils.hasForge()) null else Minecraft.getMinecraft().textureManager, false) {
 
-    var defaultFont = AWTFontRenderer(font)
-    private var boldFont = AWTFontRenderer(font.deriveFont(Font.BOLD))
-    private var italicFont = AWTFontRenderer(font.deriveFont(Font.ITALIC))
-    private var boldItalicFont = AWTFontRenderer(font.deriveFont(Font.BOLD or Font.ITALIC))
+    val fontHeight: Int
+    var defaultFont = AWTFontRenderer.build(font)
+    private var boldFont = AWTFontRenderer.build(font.deriveFont(Font.BOLD))
+    private var italicFont = AWTFontRenderer.build(font.deriveFont(Font.ITALIC))
+    private var boldItalicFont = AWTFontRenderer.build(font.deriveFont(Font.BOLD or Font.ITALIC))
 
     val height: Int
         get() = defaultFont.height / 2
@@ -34,7 +35,7 @@ class GameFontRenderer(font: Font) : FontRenderer(Minecraft.getMinecraft().gameS
         get() = defaultFont.font.size
 
     init {
-        FONT_HEIGHT = height
+        fontHeight = height
     }
 
     fun drawString(s: String, x: Float, y: Float, color: Int) = drawString(s, x, y, color, false)
@@ -169,7 +170,7 @@ class GameFontRenderer(font: Font) : FontRenderer(Minecraft.getMinecraft().gameS
     override fun getColorCode(charCode: Char) =
             ColorUtils.hexColors[getColorIndex(charCode)]
 
-    override fun getStringWidth(text: String): Int {
+    override fun getStringWidth(text: String?): Int {
         var currentText = text
 
         val event = TextEvent(currentText)
