@@ -137,7 +137,7 @@ class NoSlow : Module() {
                 msTimer.reset()
             } else if (!isBlocking && lastBlockingStat) {
                 PacketUtils.sendPacketNoEvent(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos(-1, -1, -1), EnumFacing.DOWN))
-                if (packetBuf.isNotEmpty()) 
+                if (packetBuf.isNotEmpty()) {
                     for (packet in packetBuf) {
                         PacketUtils.sendPacketNoEvent(packet)
                     }
