@@ -103,7 +103,7 @@ class BlockOverlay : Module() {
                     3F, Color.BLACK.rgb, Color.BLACK.rgb
             )*/
             GlStateManager.resetColor()
-            Fonts.fontSFUI40.drawCenteredString(info, scaledResolution.scaledWidth / 2F, scaledResolution.scaledHeight / 2F + 6F, Color.WHITE.rgb)
+            Fonts.font40.drawCenteredString(info, scaledResolution.scaledWidth / 2F, scaledResolution.scaledHeight / 2F + 6F, Color.WHITE.rgb)
         }
     }
 }

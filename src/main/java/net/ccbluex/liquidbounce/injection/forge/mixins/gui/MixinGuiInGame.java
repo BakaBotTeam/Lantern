@@ -121,7 +121,6 @@ public abstract class MixinGuiInGame extends MixinGui {
             GlStateManager.disableBlend();
             GlStateManager.resetColor();
             LiquidBounce.eventManager.callEvent(new Render2DEvent(partialTicks));
-            AWTFontRenderer.Companion.garbageCollectionTick();
             callbackInfo.cancel();
         }
     }
@@ -129,7 +128,6 @@ public abstract class MixinGuiInGame extends MixinGui {
     @Inject(method = "renderTooltip", at = @At("TAIL"))
     private void renderTooltipPost(ScaledResolution sr, float partialTicks, CallbackInfo callbackInfo) {
         LiquidBounce.eventManager.callEvent(new Render2DEvent(partialTicks));
-        AWTFontRenderer.Companion.garbageCollectionTick();
     }
 
     @Inject(method = "renderPumpkinOverlay", at = @At("HEAD"), cancellable = true)

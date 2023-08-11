@@ -23,7 +23,7 @@ class EventManager {
                 val eventClass = method.parameterTypes[0] as Class<out Event>
                 val eventTarget = method.getAnnotation(EventTarget::class.java)
 
-                val invokableEventTargets = registry.getOrElse(eventClass, { arrayListOf<EventHook>() })
+                val invokableEventTargets = registry.getOrElse(eventClass) { arrayListOf() }
                 try {
                     invokableEventTargets.add(EventHook(listener, method, eventTarget.priority, eventTarget))
                 } catch (e: Exception) {

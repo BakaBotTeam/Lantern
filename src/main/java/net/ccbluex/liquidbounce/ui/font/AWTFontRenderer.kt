@@ -61,6 +61,20 @@ abstract class AWTFontRenderer(val font: Font, startChar: Int = 0, stopChar: Int
      */
     open fun getStringWidth(text: String) = fontMetrics.stringWidth(text) / 2
 
+    /**
+     * collect useless garbage to save memory
+     */
+    open fun collectGarbage() {
+        val currentTime = System.currentTimeMillis()
+
+        cachedChars.filter { currentTime - it.value.lastUsage > FontsGC.CACHED_FONT_REMOVAL_TIME }.forEach {
+            it.value.finalize()
+
+            cachedChars.remove(it.key)
+        }
+    }
+
+
 //    /**
 //     * Get the width of a char
 //     */

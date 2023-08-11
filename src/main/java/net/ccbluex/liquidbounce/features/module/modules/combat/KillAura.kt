@@ -964,11 +964,6 @@ class KillAura : Module() {
             return
         }
 
-        if (autoBlockModeValue.get().equals("newwatchdog", true)) {
-            blockingStatus = true
-            return
-        }
-
         if (interact) {
             //mc.netHandler.addToSendQueue(C02PacketUseEntity(interactEntity, interactEntity.positionVector))
             val positionEye = mc.renderViewEntity?.getPositionEyes(1F)

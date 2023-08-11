@@ -105,7 +105,7 @@ public class AutoHypixel extends Module {
         Stencil.dispose();
 
         GlStateManager.resetColor();
-        Fonts.fontSFUI40.drawString(detail, middleX - middleWidth - 1F, posY + 4F, -1);
+        Fonts.font40.drawString(detail, middleX - middleWidth - 1F, posY + 4F, -1);
     }
 
     @EventTarget

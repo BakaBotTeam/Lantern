@@ -226,6 +226,20 @@ class GameFontRenderer(font: Font) : FontRenderer(Minecraft.getMinecraft().gameS
             defaultFont.getStringWidth(currentText) / 2
     }
 
+    fun collectGarbage() {
+        defaultFont.collectGarbage()
+        boldFont.collectGarbage()
+        italicFont.collectGarbage()
+        boldItalicFont.collectGarbage()
+    }
+
+    fun close() {
+        defaultFont.close()
+        boldFont.close()
+        italicFont.close()
+        boldItalicFont.close()
+    }
+
     override fun getCharWidth(character: Char) = getStringWidth(character.toString())
 
     override fun onResourceManagerReload(resourceManager: IResourceManager) {}

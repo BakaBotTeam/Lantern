@@ -157,8 +157,8 @@ class FontValue(valueName: String, value: FontRenderer, displayable: () -> Boole
     override fun toJson(): JsonElement? {
         val fontDetails = Fonts.getFontDetails(value) ?: return null
         val valueObject = JsonObject()
-        valueObject.addProperty("fontName", fontDetails[0] as String)
-        valueObject.addProperty("fontSize", fontDetails[1] as Int)
+        valueObject.addProperty("fontName", fontDetails.name as String)
+        valueObject.addProperty("fontSize", fontDetails.fontSize)
         return valueObject
     }
 

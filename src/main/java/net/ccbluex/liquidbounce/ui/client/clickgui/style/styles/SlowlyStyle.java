@@ -219,10 +219,10 @@ public class SlowlyStyle extends Style {
                         } else if (fontRenderer == Fonts.minecraftFont)
                             displayString = "Font: Minecraft";
                         else {
-                            final Object[] objects = Fonts.getFontDetails(fontRenderer);
+                            final Fonts.FontInfo fontInfo = Fonts.getFontDetails(fontRenderer);
 
-                            if (objects != null) {
-                                displayString = objects[0] + ((int) objects[1] != -1 ? " - " + objects[1] : "");
+                            if (fontInfo != null) {
+                                displayString = fontInfo.getName() + ((int) fontInfo.getFontSize() != -1 ? " - " + fontInfo.getFontSize() : "");
                             }
                         }
 

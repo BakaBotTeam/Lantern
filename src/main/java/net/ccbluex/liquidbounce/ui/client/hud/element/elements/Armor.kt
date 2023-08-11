@@ -25,7 +25,6 @@ import org.lwjgl.opengl.GL11
 class Armor(x: Double = -8.0, y: Double = 57.0, scale: Float = 1F,
             side: Side = Side(Side.Horizontal.MIDDLE, Side.Vertical.DOWN)) : Element(x, y, scale, side) {
 
-    private val modeValue = ListValue("Mode", arrayOf("LiquidBounce", "Exhibition"), "LiquidBounce")
     private val alignment = ListValue("Alignment", arrayOf("Horizontal", "Vertical"), "Horizontal")
 
     /**
@@ -35,7 +34,6 @@ class Armor(x: Double = -8.0, y: Double = 57.0, scale: Float = 1F,
         if (mc.playerController.isNotCreative) {
             val renderItem = mc.renderItem
             val isInsideWater = mc.thePlayer.isInsideOfMaterial(Material.water)
-            val mode = modeValue.get()
             val align = alignment.get()
 
             var x = 1
@@ -48,26 +46,10 @@ class Armor(x: Double = -8.0, y: Double = 57.0, scale: Float = 1F,
 
                 renderItem.renderItemIntoGUI(stack, x, y)
                 renderItem.renderItemOverlays(mc.fontRendererObj, stack, x, y)
-                if (mode.equals("Exhibition", true)) {
-                    RenderUtils.drawExhiEnchants(stack, x.toFloat(), y.toFloat())
-                    if (align.equals("Horizontal", true))
-                        x += 16
-                    else if (align.equals("Vertical", true))
-                        y += 16
-                } else
-                    if (align.equals("Horizontal", true))
-                        x += 18
-                    else if (align.equals("Vertical", true))
-                        y += 18
-            }
-
-            if (mode.equals("Exhibition", true)) {
-                val mainStack = mc.thePlayer.heldItem
-                if (mainStack != null && mainStack.item != null) {
-                    renderItem.renderItemIntoGUI(mainStack, x, y)
-                    renderItem.renderItemOverlays(mc.fontRendererObj, mainStack, x, y)
-                    RenderUtils.drawExhiEnchants(mainStack, x.toFloat(), y.toFloat())
-                }
+                if (align.equals("Horizontal", true))
+                    x += 18
+                else if (align.equals("Vertical", true))
+                    y += 18
             }
             
             RenderHelper.disableStandardItemLighting()
@@ -77,12 +59,7 @@ class Armor(x: Double = -8.0, y: Double = 57.0, scale: Float = 1F,
             GlStateManager.disableCull()
         }
 
-        return if (modeValue.get().equals("Exhibition", true)) {
-            if (alignment.get().equals("Horizontal", true))
-                Border(0F, 0F, 80F, 17F)
-            else
-                Border(0F, 0F, 18F, 80F)
-        } else if (alignment.get().equals("Horizontal", true))
+        return if (alignment.get().equals("Horizontal", true))
             Border(0F, 0F, 72F, 17F)
         else
             Border(0F, 0F, 18F, 72F)

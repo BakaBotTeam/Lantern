@@ -83,7 +83,6 @@ class Target : Element() {
             LiquidBounce(this),
             Chill(this),
             Rice(this),
-            Exhibition(this),
             Remix(this),
             Slowly(this)
         ).toTypedArray(), "LiquidBounce")

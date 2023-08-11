@@ -50,17 +50,17 @@ public class MosswareStyle extends Style {
             RenderUtils.drawRoundedRect((float) panel.getX(), (float) panel.getY() + 17 + panel.getFade(), (float) panel.getX() + panel.getWidth(), (float) panel.getY() + 19 + panel.getFade() + 5, 1.6F, new Color(30,30,30,150).getRGB());
         }
         GlStateManager.resetColor();
-        float textWidth = Fonts.fontSFUI35.getStringWidth("§f" + StringUtils.stripControlCodes(panel.getName()));
-        Fonts.fontSFUI35.drawString(panel.getName(), (int) (panel.getX() - (textWidth - 100.0F) / 2F), panel.getY() + 7 - 3, Color.WHITE.getRGB());
+        float textWidth = Fonts.font35.getStringWidth("§f" + StringUtils.stripControlCodes(panel.getName()));
+        Fonts.font35.drawString(panel.getName(), (int) (panel.getX() - (textWidth - 100.0F) / 2F), panel.getY() + 7 - 3, Color.WHITE.getRGB());
     }
 
     @Override
     public void drawDescription(int mouseX, int mouseY, String text) {
-        int textWidth = Fonts.fontSFUI35.getStringWidth(text);
+        int textWidth = Fonts.font35.getStringWidth(text);
 
-        RenderUtils.drawRoundedRect(mouseX + 9, mouseY, mouseX + textWidth + 14, mouseY + Fonts.fontSFUI35.FONT_HEIGHT + 3, 1.6f, new Color(40,40,40,160).getRGB());
+        RenderUtils.drawRoundedRect(mouseX + 9, mouseY, mouseX + textWidth + 14, mouseY + Fonts.font35.FONT_HEIGHT + 3, 1.6f, new Color(40,40,40,160).getRGB());
         GlStateManager.resetColor();
-        Fonts.fontSFUI35.drawString(text, mouseX + 12, mouseY + (Fonts.fontSFUI35.FONT_HEIGHT / 2), Color.WHITE.getRGB());
+        Fonts.font35.drawString(text, mouseX + 12, mouseY + (Fonts.font35.FONT_HEIGHT / 2), Color.WHITE.getRGB());
     }
 
     @Override
@@ -71,7 +71,7 @@ public class MosswareStyle extends Style {
              
         GlStateManager.resetColor();
 
-        Fonts.fontSFUI35.drawString(buttonElement.getDisplayName(), buttonElement.getX() + 5, buttonElement.getY() + 5, Color.WHITE.getRGB());
+        Fonts.font35.drawString(buttonElement.getDisplayName(), buttonElement.getX() + 5, buttonElement.getY() + 5, Color.WHITE.getRGB());
     }
 
     @Override
@@ -79,13 +79,13 @@ public class MosswareStyle extends Style {
         RenderUtils.drawRoundedRect((float) moduleElement.getX() - 1, (float) moduleElement.getY() - 1, (float) moduleElement.getX() + moduleElement.getWidth() + 1, (float) moduleElement.getY() + moduleElement.getHeight() + 1, 1.6f, hoverColor(new Color(30,30,30), moduleElement.hoverTime).getRGB());
         RenderUtils.drawRoundedRect((float) moduleElement.getX() - 1, (float) moduleElement.getY() - 1, (float) moduleElement.getX() + moduleElement.getWidth() + 1, (float) moduleElement.getY() + moduleElement.getHeight() + 1, 1.6f, hoverColor(new Color(20,20,20), moduleElement.slowlyFade).getRGB());
         GlStateManager.resetColor();
-        Fonts.fontSFUI35.drawString(moduleElement.getDisplayName(), moduleElement.getX() + 5, moduleElement.getY() + 6, Color.WHITE.getRGB());
+        Fonts.font35.drawString(moduleElement.getDisplayName(), moduleElement.getX() + 5, moduleElement.getY() + 6, Color.WHITE.getRGB());
 
         // Draw settings
         final List<Value<?>> moduleValues = moduleElement.getModule().getValues();
 
         if(!moduleValues.isEmpty()) {
-            Fonts.fontSFUI35.drawStringWithShadow(">", moduleElement.getX() + moduleElement.getWidth() - 8, moduleElement.getY() + 5, ClickGUI.generateColor().getRGB());
+            Fonts.font35.drawStringWithShadow(">", moduleElement.getX() + moduleElement.getWidth() - 8, moduleElement.getY() + 5, ClickGUI.generateColor().getRGB());
 
             if(moduleElement.isShowSettings()) {
                 if(moduleElement.getSettingsWidth() > 0F && moduleElement.slowlySettingsYPos > moduleElement.getY() + 6)
@@ -97,7 +97,7 @@ public class MosswareStyle extends Style {
                         continue;
                     if(value instanceof BoolValue) {
                         final String text = value.getName();
-                        final float textWidth = Fonts.fontSFUI35.getStringWidth(text);
+                        final float textWidth = Fonts.font35.getStringWidth(text);
 
                         if(moduleElement.getSettingsWidth() < textWidth + 8)
                             moduleElement.setSettingsWidth(textWidth + 8);
@@ -109,29 +109,29 @@ public class MosswareStyle extends Style {
                             mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
                         }
 
-                        Fonts.fontSFUI35.drawStringWithShadow(text, moduleElement.getX() + moduleElement.getWidth() + 6, moduleElement.slowlySettingsYPos + 2, ((BoolValue) value).get() ? Color.GREEN.getRGB() : Color.WHITE.getRGB());
+                        Fonts.font35.drawStringWithShadow(text, moduleElement.getX() + moduleElement.getWidth() + 6, moduleElement.slowlySettingsYPos + 2, ((BoolValue) value).get() ? Color.GREEN.getRGB() : Color.WHITE.getRGB());
                         moduleElement.slowlySettingsYPos += 11;
                     }else if(value instanceof ListValue) {
                         final ListValue listValue = (ListValue) value;
 
                         final String text = value.getName();
-                        final float textWidth = Fonts.fontSFUI35.getStringWidth(text);
+                        final float textWidth = Fonts.font35.getStringWidth(text);
 
                         if(moduleElement.getSettingsWidth() < textWidth + 16)
                             moduleElement.setSettingsWidth(textWidth + 16);
 
-                        Fonts.fontSFUI35.drawStringWithShadow(text, moduleElement.getX() + moduleElement.getWidth() + 6, moduleElement.slowlySettingsYPos + 2, 0xffffff);
-                        Fonts.fontSFUI35.drawStringWithShadow(listValue.openList ? "-" : "+", (int) (moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth() - (listValue.openList ? 5 : 6)), moduleElement.slowlySettingsYPos + 2, 0xffffff);
+                        Fonts.font35.drawStringWithShadow(text, moduleElement.getX() + moduleElement.getWidth() + 6, moduleElement.slowlySettingsYPos + 2, 0xffffff);
+                        Fonts.font35.drawStringWithShadow(listValue.openList ? "-" : "+", (int) (moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth() - (listValue.openList ? 5 : 6)), moduleElement.slowlySettingsYPos + 2, 0xffffff);
 
                         if(mouseX >= moduleElement.getX() + moduleElement.getWidth() + 4 && mouseX <= moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth() && mouseY >= moduleElement.slowlySettingsYPos && mouseY <= moduleElement.slowlySettingsYPos + Fonts.font35.FONT_HEIGHT && Mouse.isButtonDown(0) && moduleElement.isntPressed()) {
                             listValue.openList = !listValue.openList;
                             mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
                         }
 
-                        moduleElement.slowlySettingsYPos += Fonts.fontSFUI35.FONT_HEIGHT + 1;
+                        moduleElement.slowlySettingsYPos += Fonts.font35.FONT_HEIGHT + 1;
 
                         for(final String valueOfList : listValue.getValues()) {
-                            final float textWidth2 = Fonts.fontSFUI35.getStringWidth("> " + valueOfList);
+                            final float textWidth2 = Fonts.font35.getStringWidth("> " + valueOfList);
 
                             if(moduleElement.getSettingsWidth() < textWidth2 + 12)
                                 moduleElement.setSettingsWidth(textWidth2 + 12);
@@ -143,8 +143,8 @@ public class MosswareStyle extends Style {
                                 }
 
                                 GlStateManager.resetColor();
-                                Fonts.fontSFUI35.drawStringWithShadow(valueOfList, moduleElement.getX() + moduleElement.getWidth() + 6, moduleElement.slowlySettingsYPos + 2, listValue.get() != null && listValue.get().equalsIgnoreCase(valueOfList) ? Color.GREEN.getRGB() : Color.WHITE.getRGB());
-                                moduleElement.slowlySettingsYPos += Fonts.fontSFUI35.FONT_HEIGHT + 1;
+                                Fonts.font35.drawStringWithShadow(valueOfList, moduleElement.getX() + moduleElement.getWidth() + 6, moduleElement.slowlySettingsYPos + 2, listValue.get() != null && listValue.get().equalsIgnoreCase(valueOfList) ? Color.GREEN.getRGB() : Color.WHITE.getRGB());
+                                moduleElement.slowlySettingsYPos += Fonts.font35.FONT_HEIGHT + 1;
                             }
                         }
 
@@ -154,7 +154,7 @@ public class MosswareStyle extends Style {
                     }else if(value instanceof FloatValue) {
                         final FloatValue floatValue = (FloatValue) value;
                         final String text = value.getName() + "§f: " + round(floatValue.get()) + floatValue.getSuffix();
-                        final float textWidth = Fonts.fontSFUI35.getStringWidth(text);
+                        final float textWidth = Fonts.font35.getStringWidth(text);
 
                         if(moduleElement.getSettingsWidth() < textWidth + 8)
                             moduleElement.setSettingsWidth(textWidth + 8);
@@ -164,12 +164,12 @@ public class MosswareStyle extends Style {
                         if(valueOfSlide != floatValue.get())
                             floatValue.set(valueOfSlide);
 
-                        Fonts.fontSFUI35.drawStringWithShadow(text, moduleElement.getX() + moduleElement.getWidth() + 6, moduleElement.slowlySettingsYPos + 3, 0xffffff);
+                        Fonts.font35.drawStringWithShadow(text, moduleElement.getX() + moduleElement.getWidth() + 6, moduleElement.slowlySettingsYPos + 3, 0xffffff);
                         moduleElement.slowlySettingsYPos += 19;
                     }else if(value instanceof IntegerValue) {
                         final IntegerValue integerValue = (IntegerValue) value;
                         final String text = value.getName() + "§f: " + (value instanceof BlockValue ? BlockUtils.getBlockName(integerValue.get()) + " (" + integerValue.get() + ")" : (integerValue.get() + integerValue.getSuffix()));
-                        final float textWidth = Fonts.fontSFUI35.getStringWidth(text);
+                        final float textWidth = Fonts.font35.getStringWidth(text);
 
                         if(moduleElement.getSettingsWidth() < textWidth + 8)
                             moduleElement.setSettingsWidth(textWidth + 8);
@@ -179,7 +179,7 @@ public class MosswareStyle extends Style {
                         if(valueOfSlide != integerValue.get())
                             integerValue.set((int) valueOfSlide);
 
-                        Fonts.fontSFUI35.drawStringWithShadow(text, moduleElement.getX() + moduleElement.getWidth() + 6, moduleElement.slowlySettingsYPos + 3, 0xffffff);
+                        Fonts.font35.drawStringWithShadow(text, moduleElement.getX() + moduleElement.getWidth() + 6, moduleElement.slowlySettingsYPos + 3, 0xffffff);
                         moduleElement.slowlySettingsYPos += 19;
                     }else if(value instanceof FontValue) {
                         final FontValue fontValue = (FontValue) value;
@@ -194,15 +194,15 @@ public class MosswareStyle extends Style {
                         }else if(fontRenderer == Fonts.minecraftFont)
                             displayString = "Font: Minecraft";
                         else{
-                            final Object[] objects = Fonts.getFontDetails(fontRenderer);
+                            final Fonts.FontInfo fontInfo = Fonts.getFontDetails(fontRenderer);
 
-                            if(objects != null) {
-                                displayString = objects[0] + ((int) objects[1] != -1 ? " - " + objects[1] : "");
+                            if (fontInfo != null) {
+                                displayString = fontInfo.getName() + ((int) fontInfo.getFontSize() != -1 ? " - " + fontInfo.getFontSize() : "");
                             }
                         }
 
-                        Fonts.fontSFUI35.drawStringWithShadow(displayString, moduleElement.getX() + moduleElement.getWidth() + 6, moduleElement.slowlySettingsYPos + 2, Color.WHITE.getRGB());
-                        int stringWidth = Fonts.fontSFUI35.getStringWidth(displayString);
+                        Fonts.font35.drawStringWithShadow(displayString, moduleElement.getX() + moduleElement.getWidth() + 6, moduleElement.slowlySettingsYPos + 2, Color.WHITE.getRGB());
+                        int stringWidth = Fonts.font35.getStringWidth(displayString);
 
                         if(moduleElement.getSettingsWidth() < stringWidth + 8)
                             moduleElement.setSettingsWidth(stringWidth + 8);
@@ -247,13 +247,13 @@ public class MosswareStyle extends Style {
                         moduleElement.slowlySettingsYPos += 11;
                     }else{
                         final String text = value.getName() + "§f: " + value.get();
-                        final float textWidth = Fonts.fontSFUI35.getStringWidth(text);
+                        final float textWidth = Fonts.font35.getStringWidth(text);
 
                         if(moduleElement.getSettingsWidth() < textWidth + 8)
                             moduleElement.setSettingsWidth(textWidth + 8);
 
                         GlStateManager.resetColor();
-                        Fonts.fontSFUI35.drawStringWithShadow(text, moduleElement.getX() + moduleElement.getWidth() + 6, moduleElement.slowlySettingsYPos + 4, 0xffffff);
+                        Fonts.font35.drawStringWithShadow(text, moduleElement.getX() + moduleElement.getWidth() + 6, moduleElement.slowlySettingsYPos + 4, 0xffffff);
                         moduleElement.slowlySettingsYPos += 12;
                     }
                 }

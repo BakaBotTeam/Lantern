@@ -65,7 +65,7 @@ class Rice(inst: Target): TargetStyle("Rice", inst, true) {
     override fun drawTarget(entity: EntityPlayer) {
         updateAnim(entity.health)
 
-        val font = Fonts.fontSFUI40
+        val font = Fonts.font40
         val name = "Name: ${entity.name}"
         val info = "Distance: ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(entity))}"
         val healthName = decimalFormat2.format(easingHealth)
@@ -175,7 +175,7 @@ class Rice(inst: Target): TargetStyle("Rice", inst, true) {
     }
 
     override fun handleBlur(entity: EntityPlayer) {
-        val font = Fonts.fontSFUI40
+        val font = Fonts.font40
         val name = "Name: ${entity.name}"
         val info = "Distance: ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(entity))}"            
         val length = (font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F).coerceAtLeast(125F)
@@ -191,7 +191,7 @@ class Rice(inst: Target): TargetStyle("Rice", inst, true) {
     override fun handleShadowCut(entity: EntityPlayer) = handleBlur(entity)
 
     override fun handleShadow(entity: EntityPlayer) {
-        val font = Fonts.fontSFUI40
+        val font = Fonts.font40
         val name = "Name: ${entity.name}"
         val info = "Distance: ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(entity))}"            
         val length = (font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F).coerceAtLeast(125F)
@@ -202,7 +202,7 @@ class Rice(inst: Target): TargetStyle("Rice", inst, true) {
     override fun getBorder(entity: EntityPlayer?): Border? {
         entity ?: return Border(0F, 0F, 135F, 55F)
 
-        val font = Fonts.fontSFUI40
+        val font = Fonts.font40
         val name = "Name: ${entity.name}"
         val info = "Distance: ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(entity))}"            
         val length = (font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F).coerceAtLeast(125F)

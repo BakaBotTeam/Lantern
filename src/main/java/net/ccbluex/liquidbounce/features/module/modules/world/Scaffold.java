@@ -923,7 +923,7 @@ public class Scaffold extends Module {
         String counterMode = counterDisplayValue.get();
         final ScaledResolution scaledResolution = new ScaledResolution(mc);
         final String info = getBlocksAmount() + " blocks";
-        int infoWidth = Fonts.fontSFUI40.getStringWidth(info);
+        int infoWidth = Fonts.font40.getStringWidth(info);
         int infoWidth2 = Fonts.minecraftFont.getStringWidth(getBlocksAmount()+"");
         if (counterMode.equalsIgnoreCase("simple")) {
             Fonts.minecraftFont.drawString(getBlocksAmount()+"", scaledResolution.getScaledWidth() / 2 - (infoWidth2 / 2) - 1, scaledResolution.getScaledHeight() / 2 - 36, 0xFF000000, false);
@@ -949,7 +949,7 @@ public class Scaffold extends Module {
             }
             GlStateManager.resetColor();
 
-            Fonts.fontSFUI40.drawCenteredString(info, scaledResolution.getScaledWidth() / 2, scaledResolution.getScaledHeight() / 2 - 36, -1);
+            Fonts.font40.drawCenteredString(info, scaledResolution.getScaledWidth() / 2, scaledResolution.getScaledHeight() / 2 - 36, -1);
         }
         
         if (counterMode.equalsIgnoreCase("sigma")) {
@@ -971,7 +971,7 @@ public class Scaffold extends Module {
             //GL11.glPopMatrix();
             RenderUtils.drawRoundedRect(scaledResolution.getScaledWidth() / 2 - (infoWidth / 2) - 4, scaledResolution.getScaledHeight() - 60, scaledResolution.getScaledWidth() / 2 + (infoWidth / 2) + 4, scaledResolution.getScaledHeight() - 74, 2F, new Color(0.15F, 0.15F, 0.15F, progress).getRGB());
             GlStateManager.resetColor();
-            Fonts.fontSFUI35.drawCenteredString(info, scaledResolution.getScaledWidth() / 2 + 0.1F, scaledResolution.getScaledHeight() - 70, new Color(1F, 1F, 1F, 0.8F * progress).getRGB(), false);
+            Fonts.font35.drawCenteredString(info, scaledResolution.getScaledWidth() / 2 + 0.1F, scaledResolution.getScaledHeight() - 70, new Color(1F, 1F, 1F, 0.8F * progress).getRGB(), false);
             GlStateManager.translate(0, 14F + (progress * 4F), 0);
         }
 

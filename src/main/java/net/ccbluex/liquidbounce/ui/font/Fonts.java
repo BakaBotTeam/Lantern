@@ -27,16 +27,30 @@ public class Fonts extends MinecraftInstance {
     @FontDetails(fontName = "Minecraft Font")
     public static final FontRenderer minecraftFont = mc.fontRendererObj;
     private static final HashMap<FontInfo, FontRenderer> CUSTOM_FONT_RENDERERS = new HashMap<>();
+
     @FontDetails(fontName = "MiSans Medium", fontSize = 35)
     public static GameFontRenderer font35;
+
     @FontDetails(fontName = "MiSans Medium", fontSize = 40)
     public static GameFontRenderer font40;
+
+    @FontDetails(fontName = "MiSans Medium", fontSize = 72)
+    public static GameFontRenderer font72;
 
     @FontDetails(fontName = "Misans Bold", fontSize = 90)
     public static GameFontRenderer fontBold90;
 
     @FontDetails(fontName = "MiSans Bold", fontSize = 180)
     public static GameFontRenderer fontBold180;
+
+    @FontDetails(fontName = "MiSans Medium", fontSize = 30)
+    public static GameFontRenderer fontSmall;
+
+    @FontDetails(fontName = "MiSans Medium", fontSize = 24)
+    public static GameFontRenderer fontTiny;
+
+    @FontDetails(fontName = "MiSans Medium", fontSize = 52)
+    public static GameFontRenderer fontLarge;
 
     public static void loadFonts() {
         long l = System.currentTimeMillis();
@@ -47,8 +61,12 @@ public class Fonts extends MinecraftInstance {
 
         font35 = new GameFontRenderer(getFont("MiSans 开发下载字重\\MiSans-Medium.ttf", 35));
         font40 = new GameFontRenderer(getFont("MiSans 开发下载字重\\MiSans-Medium.ttf", 40));
+        font72 = new GameFontRenderer(getFont("MiSans 开发下载字重\\MiSans-Medium.ttf", 72));
         fontBold90 = new GameFontRenderer(getFont("MiSans 开发下载字重\\MiSans-Bold.ttf", 90));
         fontBold180 = new GameFontRenderer(getFont("MiSans 开发下载字重\\MiSans-Bold.ttf", 180));
+        fontSmall = new GameFontRenderer(getFont("MiSans 开发下载字重\\MiSans-Medium.ttf", 30));
+        fontTiny = new GameFontRenderer(getFont("MiSans 开发下载字重\\MiSans-Medium.ttf", 24));
+        fontLarge = new GameFontRenderer(getFont("MiSans 开发下载字重\\MiSans-Medium.ttf", 52));
 
         try {
             CUSTOM_FONT_RENDERERS.clear();
