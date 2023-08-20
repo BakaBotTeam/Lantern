@@ -54,7 +54,7 @@ class AutoPixelParty: Module() {
         val targetBlockColored = mc.thePlayer.inventory.getCurrentItem().metadata
         if (targetPosX != null && mc.thePlayer != null) {
             val blockStateUnder = mc.theWorld.getBlockState(BlockPos(mc.thePlayer.posX.toInt(), 0, mc.thePlayer.posZ.toInt()))
-            if (targetBlockColored == blockStateUnder.block.getMetaFromState(blockStateUnder)) {
+            if ((targetBlockColored == blockStateUnder.block.getMetaFromState(blockStateUnder)) || mc.thePlayer.getDistance(x.toDouble() + 0.5, 1.5, z.toDouble() + 0.5) >= 0.2) {
                 mc.gameSettings.keyBindForward.pressed = false
                 return
             }
