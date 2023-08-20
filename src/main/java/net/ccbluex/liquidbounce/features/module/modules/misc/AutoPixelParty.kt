@@ -9,8 +9,7 @@ import net.ccbluex.liquidbounce.utils.RotationUtils
 import net.minecraft.item.ItemBlock
 import net.minecraft.network.play.server.S2FPacketSetSlot
 import net.minecraft.network.play.server.S31PacketWindowProperty
-import net.minecraft.util.BlockPos
-import net.minecraft.util.Vec3i
+import net.minecraft.util.*
 
 @ModuleInfo(name = "AutoPixelParty", spacedName = "Auto PixelParty", description = "PixelParty (Only hypixel)", category = ModuleCategory.MISC)
 class AutoPixelParty: Module() {
@@ -51,7 +50,7 @@ class AutoPixelParty: Module() {
                 mc.gameSettings.keyBindForward.pressed = false
                 return
             }
-            RotationUtils.faceBlock(BlockPos(targetPosX!!.toDouble()+0.5, 1.5, targetPosZ!!.toDouble()+0.5))
+            RotationUtils.toRotation(Vec3(targetPosX!!.toDouble()+0.5, 1.5, targetPosZ!!.toDouble()+0.5), false).toPlayer(mc.thePlayer!!)
             mc.gameSettings.keyBindForward.pressed = true
         }
     }
