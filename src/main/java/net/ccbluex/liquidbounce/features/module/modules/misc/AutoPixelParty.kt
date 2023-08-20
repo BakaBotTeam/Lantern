@@ -50,6 +50,9 @@ class AutoPixelParty: Module() {
         if (targetPosX != null && mc.thePlayer != null) {
             if (targetPosX!! == mc.thePlayer.posX.toInt() && targetPosZ!! == mc.thePlayer.posZ.toInt()) {
                 mc.gameSettings.keyBindForward.pressed = false
+                targetPosX = null
+                targetPosZ = null
+                ClientUtils.displayChatMessage("reached target, stop.")
                 return
             }
             RotationUtils.faceBlock(BlockPos(targetPosX!!.toDouble()+0.5, 1.5, targetPosZ!!.toDouble()+0.5))
@@ -61,8 +64,8 @@ class AutoPixelParty: Module() {
     fun onPacket(e: PacketEvent) {
         if (e.packet is S2FPacketSetSlot) {
             ClientUtils.displayChatMessage("received s2f, reset target pos")
-            targetPosX = 0
-            targetPosZ = 0
+            targetPosX = null
+            targetPosZ = null
         }
     }
 }
