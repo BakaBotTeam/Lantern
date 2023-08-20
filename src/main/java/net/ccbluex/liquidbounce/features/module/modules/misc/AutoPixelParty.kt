@@ -51,8 +51,9 @@ class AutoPixelParty: Module() {
 
     @EventTarget
     fun onRender2D(e: Render2DEvent) {
+        var targetBlock = (mc.thePlayer.inventory.getCurrentItem().item!! as ItemBlock).getBlock()
         if (targetPosX != null && mc.thePlayer != null) {
-            if (targetPosX!! == mc.thePlayer.posX.toInt() && targetPosZ!! == mc.thePlayer.posZ.toInt()) {
+            if (equalsBlock(mc.theWorld.getBlockState(BlockPos(mc.thePlayer.posX.toInt(), 0, mc.thePlayer.posZ.toInt())).block, targetBlock)) {
                 mc.gameSettings.keyBindForward.pressed = false
                 return
             }
@@ -73,7 +74,6 @@ class AutoPixelParty: Module() {
     fun equalsBlock(b1: Block, b2: Block): Boolean {
         if (b1 == b2) {
             if (b1 is BlockColored && b2 is BlockColored) {
-                ClientUtils.displayChatMessage("colored block detected")
                 return b1.blockColor == b2.blockColor
             } else {
                 return true
