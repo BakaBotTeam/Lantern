@@ -212,7 +212,8 @@ class ModuleManager : Listenable {
                 NewGUI::class.java,
                 ResetVL::class.java,
                 SpeedMine::class.java,
-                NoClickDelay::class.java
+                NoClickDelay::class.java,
+                AutoPixelParty::class.java
         )
 
         registerModule(Fucker)
