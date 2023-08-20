@@ -1,6 +1,5 @@
 package net.ccbluex.liquidbounce.features.module.modules.misc
 
-import com.sun.javafx.geom.Vec3d
 import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
