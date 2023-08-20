@@ -9,6 +9,9 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.RotationUtils
+import net.minecraft.block.Block
+import net.minecraft.block.BlockColored
+import net.minecraft.block.state.BlockState
 import net.minecraft.item.ItemBlock
 import net.minecraft.network.play.server.S2FPacketSetSlot
 import net.minecraft.util.BlockPos
@@ -32,7 +35,7 @@ class AutoPixelParty: Module() {
             var distance = Double.MAX_VALUE
             for (x in -33..33) {
                 for (z in -33..33) {
-                    if (mc.theWorld.getBlockState(BlockPos(x, 0, z)).block == targetBlock) {
+                    if (equalsBlock(mc.theWorld.getBlockState(BlockPos(x, 0, z)).block, targetBlock)) {
                         val ndistance = mc.thePlayer.getDistance(x.toDouble()+0.5, 1.5, z.toDouble()+0.5)
                         if (ndistance <= distance) {
                             distance = ndistance
@@ -64,6 +67,19 @@ class AutoPixelParty: Module() {
             ClientUtils.displayChatMessage("received s2f, reset target pos")
             targetPosX = null
             targetPosZ = null
+        }
+    }
+
+    fun equalsBlock(b1: Block, b2: Block): Boolean {
+        if (b1 == b2) {
+            if (b1 is BlockColored && b2 is BlockColored) {
+                ClientUtils.displayChatMessage("colored block detected")
+                return b1.blockColor == b2.blockColor
+            } else {
+                return true
+            }
+        } else {
+            return false
         }
     }
 }
