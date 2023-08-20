@@ -11,7 +11,6 @@ import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.RotationUtils
 import net.minecraft.block.Block
 import net.minecraft.block.BlockColored
-import net.minecraft.block.state.BlockState
 import net.minecraft.item.ItemBlock
 import net.minecraft.network.play.server.S2FPacketSetSlot
 import net.minecraft.util.BlockPos
@@ -30,13 +29,14 @@ class AutoPixelParty: Module() {
     @EventTarget
     fun onUpdate(e: UpdateEvent) {
         if (mc.thePlayer != null && mc.theWorld != null && mc.thePlayer.inventory.getCurrentItem().item is ItemBlock && targetPosX == null) {
+            val targetBlockColored = mc.thePlayer.inventory.getCurrentItem().metadata
             ClientUtils.displayChatMessage("search target pos")
-            var targetBlock = (mc.thePlayer.inventory.getCurrentItem().item!! as ItemBlock).getBlock()
             var distance = Double.MAX_VALUE
             for (x in -33..33) {
                 for (z in -33..33) {
-                    if (equalsBlock(mc.theWorld.getBlockState(BlockPos(x, 0, z)).block, targetBlock)) {
-                        val ndistance = mc.thePlayer.getDistance(x.toDouble()+0.5, 1.5, z.toDouble()+0.5)
+                    val scannedBlockState = mc.theWorld.getBlockState(BlockPos(x, 0, z))
+                    if (targetBlockColored == scannedBlockState.block.getMetaFromState(scannedBlockState)) {
+                        val ndistance = mc.thePlayer.getDistance(x.toDouble() + 0.5, 1.5, z.toDouble() + 0.5)
                         if (ndistance <= distance) {
                             distance = ndistance
                             targetPosX = x
@@ -51,9 +51,10 @@ class AutoPixelParty: Module() {
 
     @EventTarget
     fun onRender2D(e: Render2DEvent) {
-        var targetBlock = (mc.thePlayer.inventory.getCurrentItem().item!! as ItemBlock).getBlock()
+        val targetBlockColored = mc.thePlayer.inventory.getCurrentItem().metadata
         if (targetPosX != null && mc.thePlayer != null) {
-            if (equalsBlock(mc.theWorld.getBlockState(BlockPos(mc.thePlayer.posX.toInt(), 0, mc.thePlayer.posZ.toInt())).block, targetBlock)) {
+            val blockStateUnder = mc.theWorld.getBlockState(BlockPos(mc.thePlayer.posX.toInt(), 0, mc.thePlayer.posZ.toInt()))
+            if (targetBlockColored == blockStateUnder.block.getMetaFromState(blockStateUnder)) {
                 mc.gameSettings.keyBindForward.pressed = false
                 return
             }
@@ -66,6 +67,7 @@ class AutoPixelParty: Module() {
     fun onPacket(e: PacketEvent) {
         if (e.packet is S2FPacketSetSlot) {
             ClientUtils.displayChatMessage("received s2f, reset target pos")
+            mc.gameSettings.keyBindForward.pressed = false
             targetPosX = null
             targetPosZ = null
         }
